@@ -1,28 +1,44 @@
-<template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
-</template>
-
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
+  name: 'Foo',
+
   components: {
-    HelloWorld
-  }
-}
+    phrase: require("./components/phrase").default,
+    word: require("./components/word").default,
+  },
+
+  data() {
+    return {
+      phrase1: [{label: 'here'}, {label: 'we'}],
+      phrase2: [],
+      phrase3: [],
+
+      pool: [],
+    };
+  },
+};
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <v-app>
+    <v-main>
+      <v-container>
+        <v-row>
+          <v-col>
+            <phrase v-model="phrase1" :max-syllables="5"></phrase>
+            <phrase v-model="phrase2" :max-syllables="7"></phrase>
+            <phrase v-model="phrase3" :max-syllables="5"></phrase>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <word :label="'hello'"></word>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
+</template>
+
+
