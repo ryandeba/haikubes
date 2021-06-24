@@ -1,11 +1,43 @@
 <script>
   export default {
     props: ["label"],
+
+    data() {
+      return {
+        dragging: false,
+      };
+    },
+
+    watch: {
+      dragging() {
+        if (this.dragging) {
+          this.$emit("drag:start");
+        } else {
+          this.$emit("drag:stop");
+        }
+      }
+    },
+
+    methods: {
+      onDragStart() {
+        this.dragging = true;
+      },
+
+      onDragEnd() {
+        this.dragging = false;
+      },
+    }
+
   }
 </script>
 
 <template>
-  <div class="word" draggable>
+  <div
+    class="word"
+    draggable
+    @dragstart="onDragStart"
+    @dragend="onDragEnd"
+  >
     {{ label }}
   </div>
 </template>

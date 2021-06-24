@@ -1,21 +1,54 @@
 <script>
+import Cubes from "./words.json"
+
 export default {
   name: 'Foo',
 
   components: {
     phrase: require("./components/phrase").default,
     word: require("./components/word").default,
+    "drop-target": require("./components/drop-target").default,
   },
 
   data() {
     return {
-      phrase1: [{label: 'here'}, {label: 'we'}],
-      phrase2: [],
-      phrase3: [],
+      phrases: [
+        [undefined, undefined, undefined, undefined, undefined],
+        [undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+        [undefined, undefined, undefined, undefined, undefined],
+      ],
 
+      allDice: [],
       pool: [],
+
+      selectedWord: undefined,
     };
   },
+
+  methods: {
+    throwDice() {
+      let result = [];
+
+      this.allDice.forEach(d => {
+        let randomIdx = Math.floor(Math.random() * d.length);
+        result.push(d[randomIdx]);
+      });
+
+      return result;
+    },
+
+    placeSelectedWordInDropTarget(location) {
+      let [r, c] = location;
+
+      this.$set(this.phrases[r], c, this.selectedWord);
+    }
+  },
+
+  beforeMount() {
+    this.allDice = Cubes;
+    this.pool = this.throwDice();
+  }
+
 };
 </script>
 
@@ -25,17 +58,39 @@ export default {
       <v-container>
         <v-row>
           <v-col>
-            <phrase v-model="phrase1" :max-syllables="5"></phrase>
-            <phrase v-model="phrase2" :max-syllables="7"></phrase>
-            <phrase v-model="phrase3" :max-syllables="5"></phrase>
+            <phrase
+              v-for="(phrase, r) in phrases"
+              :key="r"
+              :value="phrase"
+            >
+              <drop-target
+                v-for="(spot, c) in phrase"
+                :key="'spot_' + c"
+                @dropped="placeSelectedWordInDropTarget([r, c])"
+                @drag:start="selectedWord = word"
+                @drag:stop="selectedWord = undefined"
+              >
+                <word
+                  v-if="phrases[r][c]"
+                  :label="phrases[r][c]"
+                ></word>
+              </drop-target>
+            </phrase>
           </v-col>
         </v-row>
 
         <v-row>
-          <v-col>
-            <word :label="'hello'"></word>
+          <v-col class="d-flex flex-wrap justify-space-between">
+            <word
+              v-for="(word, i) in pool"
+              :key="i"
+              :label="word"
+              @drag:start="selectedWord = word"
+              @drag:stop="selectedWord = undefined"
+            ></word>
           </v-col>
         </v-row>
+
       </v-container>
     </v-main>
   </v-app>
