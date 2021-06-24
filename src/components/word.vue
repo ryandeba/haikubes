@@ -52,5 +52,8 @@
     justify-content: center;
     align-items: center;
     margin: 5px;
+    background: #fff;
+    z-index: 1;
+    position: relative;
   }
 </style>

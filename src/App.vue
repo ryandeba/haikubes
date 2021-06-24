@@ -2,7 +2,7 @@
 import Cubes from "./words.json"
 
 export default {
-  name: 'Foo',
+  name: 'Haikubes',
 
   components: {
     phrase: require("./components/phrase").default,
