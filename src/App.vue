@@ -9,6 +9,9 @@ export default {
     phrase: require("./components/phrase").default,
     word: require("./components/word").default,
     "drop-target": require("./components/drop-target").default,
+    "syllable-counter": require("./components/SyllableCounter").default,
+    "reset-button": require("./components/reset-button").default,
+    preview: require("./components/preview").default,
   },
 
   data() {
@@ -19,7 +22,6 @@ export default {
         [undefined, undefined, undefined, undefined, undefined],
       ],
 
-      allDice: [],
       pool: [],
 
       poolIndex: undefined,
@@ -40,14 +42,27 @@ export default {
             return a + b;
           }, 0);
       });
-    }
+    },
+
+    haiku() {
+      return this.phrases.map(phrase => {
+        return phrase
+          .filter(poolIndex => {
+            return poolIndex != undefined;
+          })
+          .map(poolIndex => {
+            return this.pool[poolIndex];
+          })
+          .join(" ");
+      });
+    },
   },
 
   methods: {
     throwDice() {
       let result = [];
 
-      this.allDice.forEach((d) => {
+      Cubes.forEach((d) => {
         let randomIdx = Math.floor(Math.random() * d.length);
         result.push(d[randomIdx]);
       });
@@ -57,6 +72,14 @@ export default {
       })
 
       return result;
+    },
+
+    clearPhrases() {
+      for (let p = 0; p < this.phrases.length; p++) {
+        for (let w = 0; w < this.phrases[p].length; w++) {
+          this.$set(this.phrases[p], w, undefined);
+        }
+      }
     },
 
     setPoolIndexInDropTarget(target) {
@@ -97,7 +120,6 @@ export default {
   },
 
   beforeMount() {
-    this.allDice = Cubes;
     this.pool = this.throwDice();
   },
 };
@@ -107,6 +129,10 @@ export default {
   <v-app>
     <v-main>
       <v-container>
+        <v-container class="d-flex flex-column align-center white elevation-5 rounded-l-lg" style="width:50px;position:fixed;right:0;top:75%;">
+          <reset-button :preventDialog="phrases.flat().filter(w => w !== undefined).length === 0" @reroll="[clearPhrases(), pool = throwDice()]"></reset-button>
+          <preview :phrases="haiku"></preview>
+        </v-container>
         <v-row>
           <v-col>
             <phrase v-for="(phrase, r) in phrases" :key="r" :value="phrase" class="d-flex align-center justify-space-between">
@@ -123,9 +149,7 @@ export default {
                   ></word>
                 </drop-target>
               </div>
-              <span class="font-weight-bold" style="font-size:52px;color:lightgray;">
-                {{ phraseSyllables[r] }}
-              </span>
+              <syllable-counter :requiredSyllables="r === 1 ? 7 : 5" :syllableCount="phraseSyllables[r]"></syllable-counter>
 
             </phrase>
           </v-col>
