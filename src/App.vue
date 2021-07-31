@@ -12,6 +12,7 @@ export default {
     "syllable-counter": require("./components/SyllableCounter").default,
     "reset-button": require("./components/reset-button").default,
     preview: require("./components/preview").default,
+    "url-preview": require("./components/url-preview").default,
   },
 
   data() {
@@ -176,6 +177,8 @@ export default {
         </v-row>
       </v-container>
     </v-main>
+
+    <url-preview></url-preview>
   </v-app>
 </template>
 
