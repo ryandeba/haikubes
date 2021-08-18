@@ -45,13 +45,13 @@
 <style scoped>
   .word {
     width: 100%;
+    min-height: 50px;
     aspect-ratio: 1/1;
     box-shadow: 0 0 5px 2px #ccc;
     border-radius: 3px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px;
     background: #fff;
     z-index: 1;
     position: relative;

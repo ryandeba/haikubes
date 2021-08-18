@@ -1,5 +1,5 @@
 <template>
-  <span class="font-weight-bold" :class="color" style="font-size: 52px;">
+  <span class="font-weight-bold" :class="[color, viewportSize]">
     {{ syllableCount }}
   </span>
 </template>
@@ -11,18 +11,31 @@ export default {
     computed: {
         color() {
             if (this.syllableCount < this.requiredSyllables) {
-                return 'grey--text text--lighten-3';
+                return 'grey--text';
             } else if (this.syllableCount === this.requiredSyllables) {
-                return 'green--text text--lighten-3';
+                return 'green--text';
             } else {
-                return 'red--text text--lighten-3';
+                return 'red--text';
             }
+        },
+
+        viewportSize() {
+            return this.$vuetify.breakpoint.name;
         }
     }
 };
-
 </script>
 
-<style>
+<style scoped>
+    .xs {
+        font-size: 20px;
+    }
 
+    .md {
+        font-size: 32px;
+    }
+
+    .lg {
+        font-size: 50px;
+    }
 </style>

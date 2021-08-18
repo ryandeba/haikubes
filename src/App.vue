@@ -6,7 +6,6 @@ export default {
   name: "Haikubes",
 
   components: {
-    phrase: require("./components/phrase").default,
     word: require("./components/word").default,
     "drop-target": require("./components/drop-target").default,
     "syllable-counter": require("./components/SyllableCounter").default,
@@ -19,7 +18,15 @@ export default {
     return {
       phrases: [
         [undefined, undefined, undefined, undefined, undefined],
-        [undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+        [
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+        ],
         [undefined, undefined, undefined, undefined, undefined],
       ],
 
@@ -31,12 +38,12 @@ export default {
 
   computed: {
     phraseSyllables() {
-      return this.phrases.map(phrase => {
+      return this.phrases.map((phrase) => {
         return phrase
-          .filter(poolIndex => {
+          .filter((poolIndex) => {
             return poolIndex != undefined;
           })
-          .map(poolIndex => {
+          .map((poolIndex) => {
             return Syllables[this.pool[poolIndex]];
           })
           .reduce((a, b) => {
@@ -46,12 +53,12 @@ export default {
     },
 
     haiku() {
-      return this.phrases.map(phrase => {
+      return this.phrases.map((phrase) => {
         return phrase
-          .filter(poolIndex => {
+          .filter((poolIndex) => {
             return poolIndex != undefined;
           })
-          .map(poolIndex => {
+          .map((poolIndex) => {
             return this.pool[poolIndex];
           })
           .join(" ");
@@ -70,7 +77,7 @@ export default {
 
       result.sort(() => {
         return Math.random() < 0.5 ? -1 : 1;
-      })
+      });
 
       return result;
     },
@@ -109,15 +116,15 @@ export default {
       let result;
 
       this.phrases.forEach((row, r) => {
-        row.forEach((col, c)  => {
+        row.forEach((col, c) => {
           if (this.phrases[r][c] === this.poolIndex) {
             result = [r, c];
           }
-        })
-      })
+        });
+      });
 
       return result;
-    }
+    },
   },
 
   beforeMount() {
@@ -132,7 +139,7 @@ export default {
       <v-container>
         <v-container
           class="d-flex flex-column align-center white elevation-5 rounded-l-lg"
-          style="width:50px;position:fixed;right:0;bottom:15%;"
+          style="width: 50px; position: fixed; right: 0; bottom: 15%"
         >
           <div v-for="(l, i) in 'HAIKUBES'.split('')" :key="i">
             {{ l }}
@@ -140,50 +147,56 @@ export default {
 
           <v-divider class="my-2" style="width: 100%"></v-divider>
 
-          <reset-button :preventDialog="phrases.flat().filter(w => w !== undefined).length === 0" @reroll="[clearPhrases(), pool = throwDice()]"></reset-button>
+          <reset-button
+            :preventDialog="
+              phrases.flat().filter((w) => w !== undefined).length === 0
+            "
+            @reroll="[clearPhrases(), (pool = throwDice())]"
+          ></reset-button>
           <preview :phrases="haiku"></preview>
         </v-container>
 
-        <v-row style="position: sticky; top: 0; z-index: 9;" class="white">
-          <v-col cols="12" v-for="(phrase, r) in phrases" :key="r">
-            <phrase :value="phrase">
-              <div style="display:grid;width:100%;grid-gap:30px;max-height:10vh;" :style="{'grid-template-columns': `repeat(8, 1fr)`}">
-                <drop-target
-                  v-for="(spot, c) in phrase"
-                  :key="'spot_' + c"
-                  @dropped="setPoolIndexInDropTarget([r, c])"
-                >
-                  <word
-                    v-if="pool[phrases[r][c]]"
-                    :label="pool[phrases[r][c]]"
-                    @drag:start="poolIndex = phrases[r][c]"
-                  ></word>
-                </drop-target>
-                <div v-for="i in 7 - phrase.length" :key="i"></div>
-                <syllable-counter :requiredSyllables="r === 1 ? 7 : 5" :syllableCount="phraseSyllables[r]" class="text-right"></syllable-counter>
-              </div>
+        <div
+          style="display: grid; grid-gap: 15px; position: sticky; top: 0; z-index: 9;"
+          class="pink lighten-5 mb-5"
+        >
+          <div
+            class="phrase"
+            v-for="(phrase, r) in phrases"
+            :key="r"
+          >
+            <drop-target
+              v-for="(spot, c) in phrase"
+              :key="'spot_' + c"
+              @dropped="setPoolIndexInDropTarget([r, c])"
+            >
+              <word
+                v-if="pool[phrases[r][c]]"
+                :label="pool[phrases[r][c]]"
+                @drag:start="poolIndex = phrases[r][c]"
+              ></word>
+            </drop-target>
 
-
-            </phrase>
-          </v-col>
-        </v-row>
+            <div v-for="i in 7 - phrase.length" :key="i"></div>
+            
+            <syllable-counter
+              :requiredSyllables="r === 1 ? 7 : 5"
+              :syllableCount="phraseSyllables[r]"
+              class="text-center"
+            ></syllable-counter>
+          </div>
+        </div>
 
         <drop-target
           @dropped="returnToPool"
           class="drop-target--naked"
-          style="width: 100%;"
+          style="width: 100%"
         >
           <v-row>
             <template v-for="(word, i) in pool">
-              <v-col
-                :key="i"
-                cols="4"
-                md="3"
-                lg="2"
-                xl="1"
-              >
+              <v-col :key="i" cols="4" md="3" lg="2" xl="1" v-if="!phrases.flat().includes(i)">
                 <word
-                  v-if="!phrases.flat().includes(i)"
+                  
                   :label="word"
                   @drag:start="poolIndex = i"
                   @drag:stop="poolIndex = undefined"
@@ -198,3 +211,14 @@ export default {
     <url-preview></url-preview>
   </v-app>
 </template>
+
+<style scoped>
+  .phrase {
+    box-shadow: inset 0 0 5px 2px #ccc;
+    border-radius: 3px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-gap: 12px;
+    align-items: center;
+  }
+</style>
