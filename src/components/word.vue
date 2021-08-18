@@ -44,8 +44,8 @@
 
 <style scoped>
   .word {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    aspect-ratio: 1/1;
     box-shadow: 0 0 5px 2px #ccc;
     border-radius: 3px;
     display: flex;

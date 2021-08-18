@@ -128,16 +128,26 @@ export default {
 
 <template>
   <v-app>
-    <v-main>
+    <v-main class="pink lighten-5">
       <v-container>
-        <v-container class="d-flex flex-column align-center white elevation-5 rounded-l-lg" style="width:50px;position:fixed;right:0;top:75%;">
+        <v-container
+          class="d-flex flex-column align-center white elevation-5 rounded-l-lg"
+          style="width:50px;position:fixed;right:0;bottom:15%;"
+        >
+          <div v-for="(l, i) in 'HAIKUBES'.split('')" :key="i">
+            {{ l }}
+          </div>
+
+          <v-divider class="my-2" style="width: 100%"></v-divider>
+
           <reset-button :preventDialog="phrases.flat().filter(w => w !== undefined).length === 0" @reroll="[clearPhrases(), pool = throwDice()]"></reset-button>
           <preview :phrases="haiku"></preview>
         </v-container>
-        <v-row>
-          <v-col>
-            <phrase v-for="(phrase, r) in phrases" :key="r" :value="phrase" class="d-flex align-center justify-space-between">
-              <div class="d-flex">
+
+        <v-row style="position: sticky; top: 0; z-index: 9;" class="white">
+          <v-col cols="12" v-for="(phrase, r) in phrases" :key="r">
+            <phrase :value="phrase">
+              <div style="display:grid;width:100%;grid-gap:30px;max-height:10vh;" :style="{'grid-template-columns': `repeat(8, 1fr)`}">
                 <drop-target
                   v-for="(spot, c) in phrase"
                   :key="'spot_' + c"
@@ -149,37 +159,42 @@ export default {
                     @drag:start="poolIndex = phrases[r][c]"
                   ></word>
                 </drop-target>
+                <div v-for="i in 7 - phrase.length" :key="i"></div>
+                <syllable-counter :requiredSyllables="r === 1 ? 7 : 5" :syllableCount="phraseSyllables[r]" class="text-right"></syllable-counter>
               </div>
-              <syllable-counter :requiredSyllables="r === 1 ? 7 : 5" :syllableCount="phraseSyllables[r]"></syllable-counter>
+
 
             </phrase>
           </v-col>
         </v-row>
 
-        <v-row>
-          <v-col>
-            <drop-target
-              @dropped="returnToPool"
-              class="d-flex flex-wrap justify-space-between"
-              style="width: 100%;"
-            >
-              <template v-for="(word, i) in pool">
+        <drop-target
+          @dropped="returnToPool"
+          class="drop-target--naked"
+          style="width: 100%;"
+        >
+          <v-row>
+            <template v-for="(word, i) in pool">
+              <v-col
+                :key="i"
+                cols="4"
+                md="3"
+                lg="2"
+                xl="1"
+              >
                 <word
                   v-if="!phrases.flat().includes(i)"
-                  :key="i"
                   :label="word"
                   @drag:start="poolIndex = i"
                   @drag:stop="poolIndex = undefined"
                 ></word>
-              </template>
-            </drop-target>
-          </v-col>
-        </v-row>
+              </v-col>
+            </template>
+          </v-row>
+        </drop-target>
       </v-container>
     </v-main>
 
     <url-preview></url-preview>
   </v-app>
 </template>
-
-

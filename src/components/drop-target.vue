@@ -44,13 +44,14 @@
 
 <style scoped>
   .drop-target {
-    width: 100px;
-    min-height: 100px;
+    /* width: 100px;
+    min-height: 100px; */
+    aspect-ratio: 1/1;
     position: relative;
     user-select: none;
   }
 
-  .drop-target--placeholder {
+  .drop-target:not(.drop-target--naked) .drop-target--placeholder {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -67,11 +68,11 @@
     pointer-events: none;
   }
 
-  .drop-target--placeholder--hidden {
+  .drop-target:not(.drop-target--naked) .drop-target--placeholder--hidden {
     transform: scale(0);
   }
 
-  .drop-target--placeholder--active {
+  .drop-target:not(.drop-target--naked) .drop-target--placeholder--active {
     background: none;
     border: 4px dashed #000;
     border-radius: 5px;
