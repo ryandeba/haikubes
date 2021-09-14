@@ -44,8 +44,8 @@
 
 <style scoped>
   .drop-target {
-    /* width: 100px;
-    min-height: 100px; */
+    width: 100px;
+    /*min-height: 100px;*/
     aspect-ratio: 1/1;
     position: relative;
     user-select: none;

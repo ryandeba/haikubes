@@ -156,36 +156,33 @@ export default {
           <preview :phrases="haiku"></preview>
         </v-container>
 
-        <div
-          style="display: grid; grid-gap: 15px; position: sticky; top: 0; z-index: 9;"
+        <v-container
           class="pink lighten-5 mb-5"
+          style="position: sticky; top: 0; z-index: 9;"
         >
-          <div
-            class="phrase"
+          <v-row
             v-for="(phrase, r) in phrases"
             :key="r"
+            class="flex-nowrap"
+            style="overflow-x:scroll;"
           >
-            <drop-target
-              v-for="(spot, c) in phrase"
-              :key="'spot_' + c"
-              @dropped="setPoolIndexInDropTarget([r, c])"
-            >
-              <word
-                v-if="pool[phrases[r][c]]"
-                :label="pool[phrases[r][c]]"
-                @drag:start="poolIndex = phrases[r][c]"
-              ></word>
-            </drop-target>
-
-            <div v-for="i in 7 - phrase.length" :key="i"></div>
-            
-            <syllable-counter
-              :requiredSyllables="r === 1 ? 7 : 5"
-              :syllableCount="phraseSyllables[r]"
-              class="text-center"
-            ></syllable-counter>
-          </div>
-        </div>
+            <v-col v-for="(spot, c) in phrase" :key="'spot_' + c" cols="auto">
+              <drop-target
+                @dropped="setPoolIndexInDropTarget([r, c])"
+              >
+                <word
+                  v-if="pool[phrases[r][c]]"
+                  :label="pool[phrases[r][c]]"
+                  @drag:start="poolIndex = phrases[r][c]"
+                ></word>
+              </drop-target>
+            </v-col>
+            <v-spacer></v-spacer>
+            <v-col cols="auto" v-if="$vuetify.breakpoint.name !== 'xs'">
+              <syllable-counter :requiredSyllables="r === 1 ? 7 : 5" :syllableCount="phraseSyllables[r]"></syllable-counter>
+            </v-col>
+          </v-row>
+        </v-container>
 
         <drop-target
           @dropped="returnToPool"
