@@ -33,6 +33,8 @@ export default {
       pool: [],
 
       poolIndex: undefined,
+
+      showMenuBar: true
     };
   },
 
@@ -125,6 +127,10 @@ export default {
 
       return result;
     },
+
+    setPoolIndex(index) {
+      this.poolIndex = index;
+    }
   },
 
   beforeMount() {
@@ -139,7 +145,13 @@ export default {
       <v-container>
         <v-container
           class="d-flex flex-column align-center white elevation-5 rounded-l-lg"
-          style="width: 50px; position: fixed; right: 0; bottom: 15%"
+          style="width: 50px; position: fixed; bottom: 15%; z-index:10;transition:all 250ms;"
+          :style="{right: showMenuBar ? '0' : '-45px'}"
+          ref="menuBar"
+          v-touch="{
+            right: () => showMenuBar = false,
+            left: () => showMenuBar = true
+          }"
         >
           <div v-for="(l, i) in 'HAIKUBES'.split('')" :key="i">
             {{ l }}
@@ -169,6 +181,7 @@ export default {
             <v-col v-for="(spot, c) in phrase" :key="'spot_' + c" cols="auto">
               <drop-target
                 @dropped="setPoolIndexInDropTarget([r, c])"
+                @click.native="setPoolIndexInDropTarget([r, c])"
               >
                 <word
                   v-if="pool[phrases[r][c]]"
@@ -193,10 +206,11 @@ export default {
             <template v-for="(word, i) in pool">
               <v-col :key="i" cols="4" md="3" lg="2" xl="1" v-if="!phrases.flat().includes(i)">
                 <word
-                  
                   :label="word"
+                  :selected="poolIndex == i"
                   @drag:start="poolIndex = i"
                   @drag:stop="poolIndex = undefined"
+                  @tap="setPoolIndex(i)"
                 ></word>
               </v-col>
             </template>

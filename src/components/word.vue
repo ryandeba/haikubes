@@ -1,6 +1,6 @@
 <script>
   export default {
-    props: ["label"],
+    props: ["label", "selected"],
 
     data() {
       return {
@@ -32,11 +32,14 @@
 </script>
 
 <template>
+  <!-- TODO: stop using click events if they will have conflicts with drag events -->
   <div
     class="word"
+    :class="selected ? 'selected' : ''"
     draggable
     @dragstart="onDragStart"
     @dragend="onDragEnd"
+    @click="$emit('tap')"
   >
     {{ label }}
   </div>
@@ -55,5 +58,9 @@
     background: #fff;
     z-index: 1;
     position: relative;
+  }
+
+  .selected {
+    background: #eeeeee55;
   }
 </style>
