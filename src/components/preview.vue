@@ -42,6 +42,10 @@
       },
 
       reset() {
+        if (!this.success && !this.failure) {
+          return;
+        }
+
         setTimeout(() => {
           this.success = false;
           this.failure = false;
