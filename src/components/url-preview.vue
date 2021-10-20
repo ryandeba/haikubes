@@ -31,7 +31,10 @@
         this.phrases = JSON.parse(phrases);
       }
 
-      history.replaceState(undefined, "", "/");
+      let url = new URL(window.location);
+      url.searchParams.delete("preview");
+
+      history.replaceState(undefined, "", url);
     }
   }
 </script>
