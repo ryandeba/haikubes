@@ -62,7 +62,12 @@
 
 <template>
   <div>
-    <v-btn icon @click="openDialog"><v-icon large>mdi-eye</v-icon></v-btn>
+    <v-list-item @click="openDialog">
+      <v-list-item-icon>
+        <v-icon>mdi-eye</v-icon>
+      </v-list-item-icon>
+      <v-list-item-title>Preview</v-list-item-title>
+    </v-list-item>
 
     <preview-dialog
       :phrases="phrases"

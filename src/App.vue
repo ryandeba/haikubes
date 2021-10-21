@@ -34,7 +34,7 @@ export default {
 
       poolIndex: undefined,
 
-      showMenuBar: true
+      drawer: false
     };
   },
 
@@ -130,7 +130,7 @@ export default {
 
     setPoolIndex(index) {
       this.poolIndex = index;
-    }
+    },
   },
 
   beforeMount() {
@@ -141,36 +141,41 @@ export default {
 
 <template>
   <v-app>
+    <v-app-bar
+      color="deep-purple"
+      dark
+      app
+      style="z-index: 7;"
+    >
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Haikubes</v-toolbar-title>
+    </v-app-bar>
+
+    <v-navigation-drawer
+      v-model="drawer"
+      temporary
+      fixed
+    >
+      <v-list
+        nav
+        dense
+      >
+        <reset-button
+          :preventDialog="
+            phrases.flat().filter((w) => w !== undefined).length === 0
+          "
+          @reroll="[clearPhrases(), (pool = throwDice())]"
+        ></reset-button>
+
+        <preview :phrases="haiku"></preview>
+      </v-list>
+    </v-navigation-drawer>
+
     <v-main class="pink lighten-5">
       <v-container>
         <v-container
-          class="d-flex flex-column align-center white elevation-5 rounded-l-lg"
-          style="width: 50px; position: fixed; bottom: 15%; z-index:10;transition:all 250ms;"
-          :style="{right: showMenuBar ? '0' : '-45px'}"
-          ref="menuBar"
-          v-touch="{
-            right: () => showMenuBar = false,
-            left: () => showMenuBar = true
-          }"
-        >
-          <div v-for="(l, i) in 'HAIKUBES'.split('')" :key="i">
-            {{ l }}
-          </div>
-
-          <v-divider class="my-2" style="width: 100%"></v-divider>
-
-          <reset-button
-            :preventDialog="
-              phrases.flat().filter((w) => w !== undefined).length === 0
-            "
-            @reroll="[clearPhrases(), (pool = throwDice())]"
-          ></reset-button>
-          <preview :phrases="haiku"></preview>
-        </v-container>
-
-        <v-container
           class="pink lighten-5 mb-5"
-          style="position: sticky; top: 0; z-index: 9;"
         >
           <v-row
             v-for="(phrase, r) in phrases"
